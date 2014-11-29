@@ -26,7 +26,7 @@ working directory to the directory containing pom.xml and run the
 command "mvn install".
 The default location for the Maven local repository is
 
-*"~/.m2" on Linux and OSX
+* "~/.m2" on Linux and OSX
 
 or
 
