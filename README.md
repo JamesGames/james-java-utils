@@ -13,7 +13,7 @@ To use James Java Utils in your Maven managed project use the
 following dependency definition:
 
     <dependency>
-        <groupId>com.github.JamesJamesJames</groupId>
+        <groupId>org.jamesgames</groupId>
         <artifactId>james-java-utils</artifactId>
     </dependency>
 
