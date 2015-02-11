@@ -1,13 +1,13 @@
 package org.jamesgames.jamesjavautils.graphics.image;
 
 import net.jcip.annotations.Immutable;
+import net.jcip.annotations.NotThreadSafe;
 import org.jamesgames.jamesjavautils.graphics.Drawable;
 
 /**
  * ImageDescription describes what a potential Image object should look like, by what graphics should be drawn to it,
  * the width and height of the potential image, as well as the initial transparency of the image.
  */
-@Immutable
 public class ImageDescription {
     private final Drawable getDrawableImageGraphics;
     private final int imageWidth;
