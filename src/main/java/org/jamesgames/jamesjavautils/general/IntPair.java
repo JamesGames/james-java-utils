@@ -3,7 +3,8 @@ package org.jamesgames.jamesjavautils.general;
 import net.jcip.annotations.Immutable;
 
 /**
- * Represents a pair of integer values. Useful for 2d coordinate representation.
+ * Represents a pair of integer values. Useful for 2d coordinate representation and for being returned from {@link
+ * java.util.function.Function}s.
  *
  * @author James Murphy
  */

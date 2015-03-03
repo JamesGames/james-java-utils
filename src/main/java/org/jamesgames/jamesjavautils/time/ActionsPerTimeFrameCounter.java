@@ -123,6 +123,10 @@ public class ActionsPerTimeFrameCounter {
             throw new IllegalArgumentException(
                     "Time elapsed has to be non negative (you passed " + timeElapsedInNanoSeconds + ")");
         }
+        if (numberOfActions < 0) {
+            throw new IllegalArgumentException(
+                    "Number of actions has to be non negative (you passed " + numberOfActions + ")");
+        }
 
         if (elapsedTimeFrameTimeInNanoSeconds == notKeepingTrackOfTimeYet) {
             setInitialStartTimeForActionCounting();

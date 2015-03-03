@@ -114,4 +114,19 @@ public class ActionsPerTimeFrameCounterTest {
         counter.addActions(0); // Timer won't update it's position of what time frame it's in without an action added
         assertEquals(0, counter.getActionCountPerTimeFrame(), generousEpsilonForSleepTests);
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddNegativeAmountOfTime() {
+        counterWith1000MillisecondTimeFrame.addActionsInNanoseconds(100, -1);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddNegativeAmountOfActionsWithTime() {
+        counterWith1000MillisecondTimeFrame.addActionsInNanoseconds(-1, 100);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddNegativeAmountOfActions() {
+        counterWith1000MillisecondTimeFrame.addActions(-1);
+    }
 }

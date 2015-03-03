@@ -2,6 +2,7 @@ package org.jamesgames.jamesjavautils.graphics.image;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Objects;
 
 /**
  * ImageCreator creates a BufferedImage with the drawn graphics from the description of a passed ImageDescription
@@ -24,9 +25,11 @@ public class ImageCreator {
                 .getDefaultConfiguration();
 
         BufferedImage createdImage = defaultConfiguration
-                .createCompatibleImage(imageDescription.getImageWidth(), imageDescription.getImageHeight(),
+                .createCompatibleImage(
+                        Objects.requireNonNull(imageDescription, "ImageDescription cannot be null").getImageWidth(),
+                        imageDescription.getImageHeight(),
                         imageDescription.getTransparency());
-        imageDescription.getGetDrawableImageGraphics().draw(createdImage.createGraphics());
+        imageDescription.getDrawableImageGraphics().draw(createdImage.createGraphics());
 
         return createdImage;
     }

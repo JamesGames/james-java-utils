@@ -47,12 +47,12 @@ public class ElapsedTimeTimerTest {
 
     @Test
     public void testCounterWithSetTimeTargetThenWithRandomTimeTargetInNanoSeconds() throws Exception {
-        ElapsedTimeTimer timer = new ElapsedTimeTimer(100 * nanosecondsInMillisecond);
-        timer.resetTargetTimeToRandomTimeSpecifiedInNanoSeconds(150 * nanosecondsInMillisecond,
-                200 * nanosecondsInMillisecond);
-        timer.addElapsedTimeInNanoSeconds(149 * nanosecondsInMillisecond);
+        ElapsedTimeTimer timer = new ElapsedTimeTimer(10 * nanosecondsInMillisecond);
+        timer.setTargetTimeToRandomTimeSpecifiedInNanoSeconds(15 * nanosecondsInMillisecond,
+                20 * nanosecondsInMillisecond);
+        timer.addElapsedTimeInNanoSeconds(15 * nanosecondsInMillisecond);
         assertEquals(false, timer.isTimerFinished());
-        timer.addElapsedTimeInNanoSeconds(50 * nanosecondsInMillisecond);
+        timer.addElapsedTimeInNanoSeconds(5 * nanosecondsInMillisecond);
         assertEquals(true, timer.isTimerFinished());
     }
 
@@ -142,11 +142,55 @@ public class ElapsedTimeTimerTest {
     }
 
     @Test
+    public void testResettingElapsedTimeMakesTimerUnfinished() {
+        thousandMillisecondsTimer.addElapsedTimeInMilliseconds(oneThousandMilliseconds);
+        assertEquals(true, thousandMillisecondsTimer.isTimerFinished());
+        thousandMillisecondsTimer.resetElapsedTime();
+        assertEquals(false, thousandMillisecondsTimer.isTimerFinished());
+    }
+
+
+    @Test
     public void testCounterWithTimeResetPastTarget() {
         thousandMillisecondsTimer.addElapsedTimeInMilliseconds(1999);
         thousandMillisecondsTimer.resetElapsedTimeToTimePastCurrentTarget();
         assertEquals(false, thousandMillisecondsTimer.isTimerFinished());
         thousandMillisecondsTimer.addElapsedTimeInMilliseconds(1);
         assertEquals(true, thousandMillisecondsTimer.isTimerFinished());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetNegativeInclusiveBoundOnRandomTargetTime() {
+        thousandMillisecondsTimer.setTargetTimeToRandomTimeSpecifiedInNanoSeconds(-1, 100);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetEqualInclusiveAndExclusiveBoundOnRandomTargetTime() {
+        thousandMillisecondsTimer.setTargetTimeToRandomTimeSpecifiedInNanoSeconds(1, 1);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testExclusiveBoundLessThanInclusiveBoundOnRandomTargetTime() {
+        thousandMillisecondsTimer.setTargetTimeToRandomTimeSpecifiedInNanoSeconds(100, 50);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testExclusiveBoundLessThanOneOnRandomTargetTime() {
+        thousandMillisecondsTimer.setTargetTimeToRandomTimeSpecifiedInNanoSeconds(50, 0);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddNegativeElapsedTime() {
+        thousandMillisecondsTimer.addElapsedTimeInNanoSeconds(-1);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testResettingTargetTimeToAmountOfTimePastElapsedTime() {
+        thousandMillisecondsTimer.resetElapsedTimeToTimePastCurrentTarget();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSettingNegativeTargetTime() {
+        thousandMillisecondsTimer.setTargetTimeInNanoSeconds(-1);
     }
 }

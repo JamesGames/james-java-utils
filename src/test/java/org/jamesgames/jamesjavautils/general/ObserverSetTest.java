@@ -2,20 +2,27 @@ package org.jamesgames.jamesjavautils.general;
 
 import org.junit.Test;
 
-import java.util.Iterator;
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
 
 public class ObserverSetTest {
 
     private static interface ExampleObserver {
+        public void someEvent();
+    }
+
+    private static class ExampleObserverImp implements ExampleObserver {
+        public int timesInformed;
+
+        @Override
+        public void someEvent() {
+            timesInformed++;
+        }
     }
 
     private final ObserverSet<ExampleObserver> observerSet = new ObserverSet<>();
-    private final ExampleObserver exampleObserverA = new ExampleObserver() {
+    private final ExampleObserverImp exampleObserverA = new ExampleObserverImp() {
     };
-    private final ExampleObserver exampleObserverB = new ExampleObserver() {
+    private final ExampleObserverImp exampleObserverB = new ExampleObserverImp() {
     };
 
     @Test
@@ -61,53 +68,19 @@ public class ObserverSetTest {
 
 
     @Test
-    public void testIteratorZeroObservers() throws Exception {
-        assertEquals(countObservers(observerSet), 0);
-    }
-
-    public int countObservers(ObserverSet set) {
-        int observerCount = 0;
-        for (Object b : set) {
-            observerCount++;
-        }
-        return observerCount;
-    }
-
-    @Test
-    public void testIteratorOneObserver() throws Exception {
-        observerSet.addObserver(exampleObserverA);
-        assertEquals(1, countObservers(observerSet));
-    }
-
-    @Test
-    public void testIteratorTwoObservers() throws Exception {
+    public void testInformObservers() throws Exception {
         observerSet.addObserver(exampleObserverA);
         observerSet.addObserver(exampleObserverB);
-        assertEquals(2, countObservers(observerSet));
-    }
-
-    @Test
-    public void testIteratorOneObserverAfterRemovingAnother() throws Exception {
-        observerSet.addObserver(exampleObserverA);
-        observerSet.addObserver(exampleObserverB);
+        observerSet.informObservers(observer -> observer.someEvent());
+        assertEquals(1, exampleObserverA.timesInformed);
+        assertEquals(1, exampleObserverB.timesInformed);
+        observerSet.removeObserver(exampleObserverA);
+        observerSet.informObservers(observer -> observer.someEvent());
+        assertEquals(1, exampleObserverA.timesInformed);
+        assertEquals(2, exampleObserverB.timesInformed);
         observerSet.removeObserver(exampleObserverB);
-        assertEquals(1, countObservers(observerSet));
-    }
-
-    @Test
-    public void testIterator() throws Exception {
-        observerSet.addObserver(exampleObserverA);
-        for (Object b : observerSet) {
-            assertSame(exampleObserverA, b);
-        }
-    }
-
-    @Test
-    public void testThreadSafeIterator() throws Exception {
-        observerSet.addObserver(exampleObserverA);
-        Iterator<ExampleObserver> iterator = observerSet.getThreadSafeIterator();
-        while (iterator.hasNext()) {
-            assertSame(exampleObserverA, iterator.next());
-        }
+        observerSet.informObservers(observer -> observer.someEvent());
+        assertEquals(1, exampleObserverA.timesInformed);
+        assertEquals(2, exampleObserverB.timesInformed);
     }
 }

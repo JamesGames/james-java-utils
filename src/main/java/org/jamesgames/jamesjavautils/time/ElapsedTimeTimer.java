@@ -33,11 +33,11 @@ public class ElapsedTimeTimer {
     }
 
     /**
-     * Creates a ElapsedTimeTimer with a target time randomly between two times..
+     * Creates a ElapsedTimeTimer with a target time randomly between two times.
      */
     public ElapsedTimeTimer(long inclusiveLowerBoundInNanoseconds,
             long exclusiveUpperBoundInNanoseconds) {
-        resetTargetTimeToRandomTimeSpecifiedInNanoSeconds(inclusiveLowerBoundInNanoseconds,
+        setTargetTimeToRandomTimeSpecifiedInNanoSeconds(inclusiveLowerBoundInNanoseconds,
                 exclusiveUpperBoundInNanoseconds);
     }
 
@@ -52,27 +52,26 @@ public class ElapsedTimeTimer {
         setTargetTimeInNanoSeconds(millisecondsToNanoSeconds(targetTimeInMilliseconds));
     }
 
-    private static long millisecondsToNanoSeconds(long milliseconds) {
+    protected static long millisecondsToNanoSeconds(long milliseconds) {
         return milliseconds * numberOfNanoSecondsInMillisecond;
     }
 
-    public void resetTargetTimeToRandomTimeSpecifiedInNanoSeconds(long inclusiveLowerBound,
+    public void setTargetTimeToRandomTimeSpecifiedInNanoSeconds(long inclusiveLowerBound,
             long exclusiveUpperBound) {
         if (inclusiveLowerBound < 0) {
-            throw new IllegalArgumentException("inclusive bound must be equal to zero or greater");
-        } else if (exclusiveUpperBound < 1) {
-            throw new IllegalArgumentException("exclusive bound must be equal to one or greater");
+            throw new IllegalArgumentException("inclusive bound must be equal to zero or greater " +
+                    "(inclusive: " + inclusiveLowerBound + ", exclusive: " + exclusiveUpperBound + ")");
         } else if (exclusiveUpperBound <= inclusiveLowerBound) {
-            throw new IllegalArgumentException("exclusive bound cannot be less than or equal to inclusive bound");
+            throw new IllegalArgumentException("exclusive bound cannot be less than or equal to inclusive bound " +
+                    "(inclusive: " + inclusiveLowerBound + ", exclusive: " + exclusiveUpperBound + ")");
         }
         setTargetTimeInNanoSeconds(inclusiveLowerBound +
                 ((long) (randomTargetTimeGenerator.nextDouble() * (exclusiveUpperBound - inclusiveLowerBound))));
-
     }
 
     public void resetTargetTimeToRandomTimeSpecifiedInMilliseconds(long inclusiveLowerBound,
             long exclusiveUpperBound) {
-        resetTargetTimeToRandomTimeSpecifiedInNanoSeconds(millisecondsToNanoSeconds(inclusiveLowerBound),
+        setTargetTimeToRandomTimeSpecifiedInNanoSeconds(millisecondsToNanoSeconds(inclusiveLowerBound),
                 millisecondsToNanoSeconds(exclusiveUpperBound));
     }
 
@@ -83,7 +82,16 @@ public class ElapsedTimeTimer {
 
         totalElapsedTimeInNanoSeconds += elapsedTimeInNanoSeconds;
 
+
+        boolean timerWasAlreadyFinished = timerFinished;
         timerFinished = totalElapsedTimeInNanoSeconds >= targetTimeInNanoSeconds;
+        if (timerFinished && !timerWasAlreadyFinished) {
+            onTimerFinished();
+        }
+    }
+
+    protected void onTimerFinished() {
+        // Do nothing implementation, other implementations can do work here if needed
     }
 
     public void addElapsedTimeInMilliseconds(long elapsedTimeInMilliseconds) {
@@ -111,6 +119,10 @@ public class ElapsedTimeTimer {
 
     public boolean isTimerFinished() {
         return timerFinished;
+    }
+
+    protected void setTimerUnfinished() {
+        timerFinished = false;
     }
 
 }

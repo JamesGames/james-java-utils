@@ -23,7 +23,7 @@ public class ImageDescriptionTest {
 
     @Test
     public void testGetGetDrawableImageGraphics() throws Exception {
-        assertSame(exampleDescription.getGetDrawableImageGraphics(), exampleDrawable);
+        assertSame(exampleDescription.getDrawableImageGraphics(), exampleDrawable);
     }
 
     @Test
