@@ -7,7 +7,7 @@
 
     <groupId>org.jamesgames</groupId>
     <artifactId>james-java-utils</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
     <packaging>jar</packaging>
 
     <name>James Java Utils</name>
